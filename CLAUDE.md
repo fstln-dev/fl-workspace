@@ -1,6 +1,6 @@
 # Claude Code Native AI 协同工作空间
 
-> ⚠️ **版本**: 1.0.0 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
+> ⚠️ **版本**: 1.0.1 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
 
 这是一套用于 Claude Code 的工作空间配置，让 AI 成为项目协作的原生运行时。
 
@@ -63,7 +63,7 @@ git status
 
 如果显示有更新，提示用户：
 ```
-🔄 工作空间有新版本可用 (当前: 1.0.0 → 最新: x.x.x)
+🔄 工作空间有新版本可用 (当前: 1.0.1 → 最新: x.x.x)
 
 是否更新？回复"更新"我来帮你同步。
 ```
@@ -102,7 +102,7 @@ fl-workspace/
 │           ├── prd.md
 │           └── tech-design.md
 └── skills/                      # 通用 Skills
-    ├── workspace-guide/         # 工作空间使用向导
+    ├── workspace-guide/         # 工作空间使用指南
     ├── workspace-init/          # 项目初始化
     ├── doc-workflow/            # 文档创建、评审、发布
     ├── task-management/         # 任务管理
@@ -146,9 +146,10 @@ fl-workspace/
 
 ### 飞书集成
 
-在项目的 `.mcp.json` 中配置远程飞书 MCP 服务器：
+在项目的 `.mcp.json` 中配置远程飞书 MCP 服务器。
 
-**feishu** (日常交互，全功能):
+**feishu** (推荐，开箱即用):
+
 ```json
 {
   "mcpServers": {
@@ -160,31 +161,31 @@ fl-workspace/
 }
 ```
 
-**feishu-official** (云文档深度操作，需要 OAuth):
-```json
-{
-  "mcpServers": {
-    "feishu": {
-      "type": "http",
-      "url": "https://feishu-mcp.fastgrowth.ai/mcp"
-    },
-    "feishu-official": {
-      "type": "http",
-      "url": "https://mcp.feishu.cn/mcp",
-      "headers": {
-        "X-Lark-MCP-UAT": "${FEISHU_UAT}",
-        "X-Lark-MCP-Allowed-Tools": "search-doc,create-doc,fetch-doc,update-doc,list-docs,get-comments,add-comments,search-user,get-user,fetch-file"
-      }
-    }
-  }
-}
-```
+**功能对比：**
 
-首次使用流程：
+| 功能 | feishu (推荐) | feishu-official |
+|------|---------------|-----------------|
+| Wiki 文档操作 | ✅ | ✅ |
+| 多维表格操作 | ✅ | ❌ |
+| 任务管理 | ✅ | ❌ |
+| 日历集成 | ✅ | ❌ |
+| 消息发送 | ✅ | ❌ |
+| 云文档深度操作 | ❌ | ✅ |
+| 配置复杂度 | 简单 | 需要 OAuth |
+
+**feishu-official** 是飞书官方 MCP，提供云文档深度操作能力。由于需要特殊的 OAuth 配置，建议通过 `/mcp` 命令手动添加：
+
+1. `/mcp` → Add MCP Server → HTTP
+2. Name: `feishu-official`, URL: `https://mcp.feishu.cn/mcp`
+3. `/mcp` → feishu-official → Authentication 完成授权
+4. 重启 Claude Code
+
+**首次使用流程：**
 ```
 1. 授权: 在 Claude Code 中输入 /mcp → 选择 feishu → Authentication → 在浏览器点击授权
-2. 配置知识库: "帮我配置飞书知识库"
-3. 开始使用: 直接操作飞书资源
+2. 重启: 退出并重新打开 Claude Code
+3. 配置知识库: "帮我配置飞书知识库"
+4. 开始使用: 直接操作飞书资源
 ```
 
 ## 项目类型
