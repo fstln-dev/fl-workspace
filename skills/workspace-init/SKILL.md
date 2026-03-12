@@ -91,6 +91,26 @@ echo "✅ 已更新到最新版本"
 [继续] [跳过]
 ```
 
+**重要：选择飞书集成后，AI 必须立即创建 .mcp.json 文件：**
+
+```bash
+# 创建 .mcp.json 文件
+cat > .mcp.json << 'EOF'
+{
+  "mcpServers": {
+    "feishu": {
+      "type": "http",
+      "url": "https://feishu-mcp.fastgrowth.ai/mcp"
+    }
+  }
+}
+EOF
+
+echo "✅ 已创建 .mcp.json 配置文件"
+```
+
+如果选择 feishu-official 或两者都配置，则创建对应的配置。
+
 如果选择跳过：
 ```
 飞书集成未配置
@@ -135,8 +155,11 @@ echo "✅ 已更新到最新版本"
 → 选择 Authentication
 → 浏览器自动打开授权页面，用户点击授权即可
 
+⚠️ **重要：授权完成后，必须退出并重新打开 Claude Code 才能加载 MCP！**
+
 如果选择 [稍后授权]：
 → 提示用户随时可以通过 /mcp → feishu → Authentication 完成授权
+→ 提醒：授权后需要重启 Claude Code
 ```
 
 ### 步骤 5: 知识库配置（如果已完成授权）
@@ -201,8 +224,9 @@ fi
 ```
 project-root/
 ├── CLAUDE.md                    # AI 配置（自动加载）
+├── .mcp.json                    # MCP 配置
 ├── .claude/
-│   ├── settings.json            # MCP 配置
+│   ├── settings.json            # Claude Code 设置
 │   └── context/
 │       ├── team.md              # 团队成员
 │       ├── doc-index.md         # 文档索引
@@ -289,7 +313,7 @@ Bitable: {app_token}
 - 代码: 需要 1 人评审通过
 ```
 
-### 步骤 4: Git Hooks 配置
+### 步骤 7: Git Hooks 配置
 
 ```
 🔧 Git Hooks 配置
@@ -363,6 +387,7 @@ AI: 使用 research 模板，项目名 AI-Research，快速初始化
 1. 编辑 .claude/context/team.md 添加团队成员
 2. 获取飞书授权（如果启用了飞书集成）:
    输入 /mcp → 选择 feishu → Authentication
+   ⚠️ 授权后需要退出并重新打开 Claude Code
 3. 创建第一个文档:
    "创建订单模块的 PRD"
 
