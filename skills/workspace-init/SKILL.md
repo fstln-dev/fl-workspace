@@ -81,12 +81,15 @@ echo "✅ 已更新到最新版本"
 
 飞书 MCP 使用远程服务器，无需配置本地凭证。
 
-可选的飞书 MCP:
-[1] feishu            - 日常交互，全功能（推荐）
-[2] feishu-official   - 云文档深度操作（需要 OAuth 授权）
-[3] 两者都配置       - 同时启用两个 MCP
+推荐的配置：
+  feishu - 日常交互，全功能（推荐）
+  → 支持：Wiki、多维表格、任务、日历、消息等
+  → 无需额外配置，开箱即用
 
-将在 .mcp.json 中添加远程 MCP 服务器地址。
+可选的高级配置：
+  feishu-official - 官方云文档深度操作
+  → 需要单独配置 OAuth（稍后手动添加）
+  → 用于云文档的深度操作能力
 
 [继续] [跳过]
 ```
@@ -94,7 +97,7 @@ echo "✅ 已更新到最新版本"
 **重要：选择飞书集成后，AI 必须立即创建 .mcp.json 文件：**
 
 ```bash
-# 创建 .mcp.json 文件
+# 创建 .mcp.json 文件（只配置 feishu，开箱即用）
 cat > .mcp.json << 'EOF'
 {
   "mcpServers": {
@@ -109,7 +112,7 @@ EOF
 echo "✅ 已创建 .mcp.json 配置文件"
 ```
 
-如果选择 feishu-official 或两者都配置，则创建对应的配置。
+**注意：** feishu-official 需要特殊的 OAuth 配置，不在初始化时自动添加。如需使用，请参考"feishu-official 手动配置"章节。
 
 如果选择跳过：
 ```
@@ -216,6 +219,48 @@ fi
 ```
 
 如果项目尚未初始化 git，hook 脚本会保存在 `scripts/post-commit`，用户可以在后续 `git init` 后手动安装。
+
+## feishu-official 手动配置
+
+feishu-official 是飞书官方 MCP，提供云文档深度操作能力。由于需要 OAuth 配置，建议在基础设置完成后再手动添加。
+
+### 配置步骤
+
+**1. 在 Claude Code 中添加 MCP：**
+
+```
+/mcp → Add MCP Server → HTTP
+```
+
+输入以下信息：
+- Name: `feishu-official`
+- URL: `https://mcp.feishu.cn/mcp`
+
+**2. 完成 OAuth 授权：**
+
+```
+/mcp → feishu-official → Authentication
+```
+
+浏览器会打开授权页面，点击授权即可。
+
+**3. 重启 Claude Code：**
+
+⚠️ 授权完成后，必须退出并重新打开 Claude Code。
+
+### 功能对比
+
+| 功能 | feishu (推荐) | feishu-official |
+|------|---------------|-----------------|
+| Wiki 文档操作 | ✅ | ✅ |
+| 多维表格操作 | ✅ | ❌ |
+| 任务管理 | ✅ | ❌ |
+| 日历集成 | ✅ | ❌ |
+| 消息发送 | ✅ | ❌ |
+| 云文档深度操作 | ❌ | ✅ |
+| 配置复杂度 | 简单 | 需要 OAuth |
+
+**建议：** 大多数用户只需要配置 `feishu` 即可满足日常需求。
 
 ## 生成的目录结构
 
@@ -388,7 +433,9 @@ AI: 使用 research 模板，项目名 AI-Research，快速初始化
 2. 获取飞书授权（如果启用了飞书集成）:
    输入 /mcp → 选择 feishu → Authentication
    ⚠️ 授权后需要退出并重新打开 Claude Code
-3. 创建第一个文档:
+3. （可选）配置 feishu-official:
+   如需云文档深度操作，请参考"feishu-official 手动配置"
+4. 创建第一个文档:
    "创建订单模块的 PRD"
 
 开始工作？
