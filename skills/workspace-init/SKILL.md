@@ -79,26 +79,79 @@ echo "✅ 已更新到最新版本"
 
 如果选择 [是]：
 
-飞书 MCP 使用远程服务器，无需配置本地凭证。
+推荐同时配置两个飞书 MCP，获得完整功能：
 
-推荐的配置：
-  feishu - 日常交互，全功能（推荐）
-  → 支持：Wiki、多维表格、任务、日历、消息等
-  → 无需额外配置，开箱即用
+┌─────────────────────────────────────────────────────────────┐
+│  feishu-official (飞书官方 MCP)                              │
+│  → 云文档深度操作                                            │
+│  → 需要先在飞书配置平台获取授权后的 MCP URL                   │
+│  → 配置后立即可用                                            │
+├─────────────────────────────────────────────────────────────┤
+│  feishu (第三方 MCP)                                         │
+│  → Wiki、多维表格、任务、日历、消息等                         │
+│  → 配置后需要通过 /mcp 手动授权                              │
+│  → 授权后需要重启 Claude Code                                │
+└─────────────────────────────────────────────────────────────┘
 
-可选的高级配置：
-  feishu-official - 官方云文档深度操作
-  → 需要单独配置 OAuth（稍后手动添加）
-  → 用于云文档的深度操作能力
+[同时配置两个] [仅配置 feishu-official] [仅配置 feishu] [跳过]
+```
+
+#### 选项 A: 配置 feishu-official
+
+```
+📋 配置 feishu-official (飞书官方 MCP)
+
+请按以下步骤获取 MCP URL：
+
+1. 打开飞书 MCP 配置平台：https://open.feishu.cn/page/mcp
+2. 点击「创建 MCP 服务」
+3. 在「添加工具」中选择「云文档」工具集
+4. 点击「授权」完成用户授权
+5. 复制生成的「服务器 URL」
+
+⚠️ 注意：
+- 服务器 URL 包含您的授权信息，请勿泄露
+- MCP 服务有效期 7 天，过期需重新授权
+- 如链接泄露，可在平台点击「重置链接」
+
+请粘贴您的 feishu-official MCP URL: _
+```
+
+**AI 收到 URL 后，写入 .mcp.json：**
+
+```json
+{
+  "mcpServers": {
+    "feishu-official": {
+      "type": "http",
+      "url": "<用户提供的 MCP URL>"
+    }
+  }
+}
+```
+
+#### 选项 B: 配置 feishu
+
+```
+📋 配置 feishu (第三方 MCP)
+
+feishu MCP 提供多维表格、任务、日历等功能。
+配置后需要手动授权。
+
+将在 .mcp.json 中添加：
+{
+  "feishu": {
+    "type": "http",
+    "url": "https://feishu-mcp.fastgrowth.ai/mcp"
+  }
+}
 
 [继续] [跳过]
 ```
 
-**重要：选择飞书集成后，AI 必须立即创建 .mcp.json 文件：**
+**如果用户选择继续，AI 更新 .mcp.json：**
 
-```bash
-# 创建 .mcp.json 文件（只配置 feishu，开箱即用）
-cat > .mcp.json << 'EOF'
+```json
 {
   "mcpServers": {
     "feishu": {
@@ -107,62 +160,43 @@ cat > .mcp.json << 'EOF'
     }
   }
 }
-EOF
-
-echo "✅ 已创建 .mcp.json 配置文件"
 ```
 
-**注意：** feishu-official 需要特殊的 OAuth 配置，不在初始化时自动添加。如需使用，请参考"feishu-official 手动配置"章节。
+#### 如果选择跳过飞书集成
 
-如果选择跳过：
 ```
 飞书集成未配置
-
-后续可在 .mcp.json 中添加飞书 MCP 配置：
-{
-  "mcpServers": {
-    "feishu": {
-      "type": "http",
-      "url": "https://feishu-mcp.fastgrowth.ai/mcp"
-    }
-  }
-}
 
 没有飞书集成时，以下功能不可用：
 - Wiki 文档同步
 - 多维表格操作
 - 任务管理
 - 日历集成
+- 云文档操作
+
+后续可随时通过「配置飞书」重新配置。
 
 [继续] [返回配置]
 ```
 
-### 步骤 4: OAuth 授权（如果配置了飞书）
+### 步骤 4: feishu 授权（如果配置了 feishu）
 
 ```
-飞书用户授权
+📱 feishu MCP 授权
 
-是否现在完成用户授权 (UAT)？
+feishu MCP 已配置，但需要用户授权才能使用。
 
-用户授权后可以使用：
-- 访问您的 Wiki 知识库
-- 操作多维表格
-- 管理个人任务
-- 访问日历
+授权步骤：
+1. 退出 Claude Code
+2. 重新打开 Claude Code
+3. 输入 /mcp
+4. 选择 feishu MCP 服务器，按 Enter
+5. 选择 Authentication
+6. 浏览器自动打开授权页面，点击授权
 
-[立即授权] [稍后授权]
+⚠️ **重要：授权完成后，必须退出并重新打开 Claude Code！**
 
-如果选择 [立即授权]：
-→ 在 Claude Code 中输入 /mcp
-→ 选择 feishu MCP 服务器，按 Enter 进入
-→ 选择 Authentication
-→ 浏览器自动打开授权页面，用户点击授权即可
-
-⚠️ **重要：授权完成后，必须退出并重新打开 Claude Code 才能加载 MCP！**
-
-如果选择 [稍后授权]：
-→ 提示用户随时可以通过 /mcp → feishu → Authentication 完成授权
-→ 提醒：授权后需要重启 Claude Code
+[已理解，稍后授权] [跳过]
 ```
 
 ### 步骤 5: 知识库配置（如果已完成授权）
@@ -185,7 +219,7 @@ echo "✅ 已创建 .mcp.json 配置文件"
 📁 生成项目结构...
 
 ✅ 创建 CLAUDE.md
-✅ 创建 .mcp.json (飞书远程 MCP 配置)
+✅ 创建 .mcp.json (飞书 MCP 配置)
 ✅ 创建 .claude/settings.json
 ✅ 创建 .claude/context/team.md
 ✅ 创建 .claude/context/doc-index.md
@@ -220,47 +254,20 @@ fi
 
 如果项目尚未初始化 git，hook 脚本会保存在 `scripts/post-commit`，用户可以在后续 `git init` 后手动安装。
 
-## feishu-official 手动配置
+## 功能对比
 
-feishu-official 是飞书官方 MCP，提供云文档深度操作能力。由于需要 OAuth 配置，建议在基础设置完成后再手动添加。
-
-### 配置步骤
-
-**1. 在 Claude Code 中添加 MCP：**
-
-```
-/mcp → Add MCP Server → HTTP
-```
-
-输入以下信息：
-- Name: `feishu-official`
-- URL: `https://mcp.feishu.cn/mcp`
-
-**2. 完成 OAuth 授权：**
-
-```
-/mcp → feishu-official → Authentication
-```
-
-浏览器会打开授权页面，点击授权即可。
-
-**3. 重启 Claude Code：**
-
-⚠️ 授权完成后，必须退出并重新打开 Claude Code。
-
-### 功能对比
-
-| 功能 | feishu (推荐) | feishu-official |
-|------|---------------|-----------------|
+| 功能 | feishu-official | feishu |
+| --- | --- | --- |
+| 云文档深度操作 | ✅ | ❌ |
 | Wiki 文档操作 | ✅ | ✅ |
-| 多维表格操作 | ✅ | ❌ |
-| 任务管理 | ✅ | ❌ |
-| 日历集成 | ✅ | ❌ |
-| 消息发送 | ✅ | ❌ |
-| 云文档深度操作 | ❌ | ✅ |
-| 配置复杂度 | 简单 | 需要 OAuth |
+| 多维表格操作 | ❌ | ✅ |
+| 任务管理 | ❌ | ✅ |
+| 日历集成 | ❌ | ✅ |
+| 消息发送 | ❌ | ✅ |
+| 配置方式 | 飞书平台获取 URL | /mcp 手动授权 |
+| 有效期 | 7 天需续期 | 长期有效 |
 
-**建议：** 大多数用户只需要配置 `feishu` 即可满足日常需求。
+**建议：** 同时配置两个 MCP，获得完整的飞书功能。
 
 ## 生成的目录结构
 
@@ -318,13 +325,17 @@ Bitable: {app_token}
 [... product-dev 可用 Skills 列表 ...]
 ```
 
-## .mcp.json 配置
+## .mcp.json 配置示例
 
-生成的 `.mcp.json`：
+**同时配置两个 MCP：**
 
 ```json
 {
   "mcpServers": {
+    "feishu-official": {
+      "type": "http",
+      "url": "https://mcp.feishu.cn/mcp/xxx（用户从飞书平台获取的 URL）"
+    },
     "feishu": {
       "type": "http",
       "url": "https://feishu-mcp.fastgrowth.ai/mcp"
@@ -430,16 +441,32 @@ AI: 使用 research 模板，项目名 AI-Research，快速初始化
 下一步建议:
 
 1. 编辑 .claude/context/team.md 添加团队成员
-2. 获取飞书授权（如果启用了飞书集成）:
-   输入 /mcp → 选择 feishu → Authentication
-   ⚠️ 授权后需要退出并重新打开 Claude Code
-3. （可选）配置 feishu-official:
-   如需云文档深度操作，请参考"feishu-official 手动配置"
+
+2. 完成飞书授权（如果配置了 feishu）:
+   a. 退出并重新打开 Claude Code
+   b. 输入 /mcp → 选择 feishu → Authentication
+   c. 在浏览器中点击授权
+   d. 再次退出并重新打开 Claude Code
+
+3. 配置知识库（可选）:
+   "帮我配置飞书知识库"
+
 4. 创建第一个文档:
    "创建订单模块的 PRD"
 
 开始工作？
 ```
+
+## feishu-official URL 续期
+
+feishu-official 的 MCP URL 有效期为 7 天。过期后：
+
+1. 打开飞书 MCP 配置平台：https://open.feishu.cn/page/mcp
+2. 找到对应的 MCP 服务
+3. 点击「重新授权」
+4. 复制新的服务器 URL
+5. 更新项目中的 .mcp.json 文件
+6. 重启 Claude Code
 
 ## 从现有项目迁移
 
@@ -470,3 +497,4 @@ AI: 使用 research 模板，项目名 AI-Research，快速初始化
 | 权限不足 | 提示检查目录权限 |
 | 飞书连接失败 | 允许跳过，稍后配置 |
 | 模板不存在 | 使用默认模板 |
+| MCP URL 无效 | 提示用户重新获取 |

@@ -1,6 +1,6 @@
 # Claude Code Native AI 协同工作空间
 
-> ⚠️ **版本**: 1.0.1 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
+> ⚠️ **版本**: 1.0.2 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
 
 这是一套用于 Claude Code 的工作空间配置，让 AI 成为项目协作的原生运行时。
 
@@ -63,7 +63,7 @@ git status
 
 如果显示有更新，提示用户：
 ```
-🔄 工作空间有新版本可用 (当前: 1.0.1 → 最新: x.x.x)
+🔄 工作空间有新版本可用 (当前: 1.0.2 → 最新: x.x.x)
 
 是否更新？回复"更新"我来帮你同步。
 ```
@@ -131,7 +131,7 @@ fl-workspace/
 ### Skills
 
 | Skill | 用途 | 触发方式 |
-|-------|------|----------|
+| --- | --- | --- |
 | workspace-init | 项目初始化向导 | 说"初始化项目" |
 | workspace-guide | 工作空间使用指南 | 说"工作空间帮助" |
 | doc-workflow | 文档创建、评审、发布 | 说"创建文档" |
@@ -146,13 +146,60 @@ fl-workspace/
 
 ### 飞书集成
 
-在项目的 `.mcp.json` 中配置远程飞书 MCP 服务器。
+推荐同时配置两个飞书 MCP，获得完整功能。
 
-**feishu** (推荐，开箱即用):
+#### feishu-official (飞书官方 MCP)
+
+**获取 MCP URL：**
+1. 打开飞书 MCP 配置平台：https://open.feishu.cn/page/mcp
+2. 点击「创建 MCP 服务」
+3. 添加「云文档」工具集
+4. 完成授权后，复制「服务器 URL」
+
+**配置到 .mcp.json：**
+```json
+{
+  "mcpServers": {
+    "feishu-official": {
+      "type": "http",
+      "url": "https://mcp.feishu.cn/mcp/xxx..."
+    }
+  }
+}
+```
+
+> ⚠️ **有效期**: MCP URL 有效期为 7 天，过期需在平台点击「重新授权」
+
+#### feishu (第三方 MCP)
+
+**配置后需手动授权：**
+1. 退出并重新打开 Claude Code
+2. 输入 `/mcp` → 选择 feishu → Authentication
+3. 在浏览器中点击授权
+4. 再次退出并重新打开 Claude Code
+
+#### 功能对比
+
+| 功能 | feishu-official | feishu |
+| --- | --- | --- |
+| 云文档深度操作 | ✅ | ❌ |
+| Wiki 文档操作 | ✅ | ✅ |
+| 多维表格操作 | ❌ | ✅ |
+| 任务管理 | ❌ | ✅ |
+| 日历集成 | ❌ | ✅ |
+| 消息发送 | ❌ | ✅ |
+| 配置方式 | 飞书平台获取 URL | /mcp 手动授权 |
+| 有效期 | 7 天需续期 | 长期有效 |
+
+#### 推荐配置（同时启用两个）
 
 ```json
 {
   "mcpServers": {
+    "feishu-official": {
+      "type": "http",
+      "url": "https://mcp.feishu.cn/mcp/xxx..."
+    },
     "feishu": {
       "type": "http",
       "url": "https://feishu-mcp.fastgrowth.ai/mcp"
@@ -161,39 +208,19 @@ fl-workspace/
 }
 ```
 
-**功能对比：**
-
-| 功能 | feishu (推荐) | feishu-official |
-|------|---------------|-----------------|
-| Wiki 文档操作 | ✅ | ✅ |
-| 多维表格操作 | ✅ | ❌ |
-| 任务管理 | ✅ | ❌ |
-| 日历集成 | ✅ | ❌ |
-| 消息发送 | ✅ | ❌ |
-| 云文档深度操作 | ❌ | ✅ |
-| 配置复杂度 | 简单 | 需要 OAuth |
-
-**feishu-official** 是飞书官方 MCP，提供云文档深度操作能力。由于需要特殊的 OAuth 配置，建议通过 `/mcp` 命令手动添加：
-
-1. `/mcp` → Add MCP Server → HTTP
-2. Name: `feishu-official`, URL: `https://mcp.feishu.cn/mcp`
-3. `/mcp` → feishu-official → Authentication 完成授权
-4. 重启 Claude Code
-
 **首次使用流程：**
-```
-1. 授权: 在 Claude Code 中输入 /mcp → 选择 feishu → Authentication → 在浏览器点击授权
-2. 重启: 退出并重新打开 Claude Code
-3. 配置知识库: "帮我配置飞书知识库"
-4. 开始使用: 直接操作飞书资源
-```
+1. 配置 feishu-official：在飞书平台获取 URL，写入 .mcp.json
+2. 配置 feishu：重启后通过 /mcp 授权
+3. 再次重启 Claude Code
+4. 配置知识库："帮我配置飞书知识库"
+5. 开始使用
 
 ## 项目类型
 
 根据项目性质选择对应的模板：
 
 | 类型 | 适用场景 | 流程 |
-|------|----------|------|
+| --- | --- | --- |
 | product-dev | 产品研发、功能开发 | 需求 → 设计 → 开发 → 测试 → 发布 |
 | implementation | 实施交付、客户项目 | 需求 → 方案 → 实施 → 验收 → 部署 |
 | operation | 运营活动、持续运营 | 规划 → 执行 → 监控 → 复盘 |
