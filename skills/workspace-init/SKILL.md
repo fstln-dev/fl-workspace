@@ -54,9 +54,22 @@ echo "✅ 已更新到最新版本"
 [2] implementation - 实施交付（需求、方案、实施、验收）
 [3] operation      - 运营活动（分析、策略、SOP、复盘）
 [4] it-infra       - IT 信息化（需求、方案、集成、运维）
+[5] whiteboard     - 白板/笔记（极简配置，自由记录）
 
 选择: _
 ```
+
+#### whiteboard 类型说明
+
+whiteboard 是极简模板，适用于：
+- 个人笔记、学习记录
+- 快速原型、想法收集
+- 不需要复杂流程的项目
+
+特点：
+- 只有 `docs/` 目录
+- 支持飞书集成（可选）
+- 可随时升级到其他模板
 
 ### 步骤 2: 基本信息
 
@@ -213,6 +226,52 @@ feishu MCP 已配置，但需要用户授权才能使用。
 [配置] [跳过]
 ```
 
+### 步骤 5.5: Git 仓库初始化（强制）
+
+```
+📦 Git 仓库初始化
+
+🔍 检查 Git 仓库状态...
+
+[已初始化] 检测到 Git 仓库，跳过初始化
+[未初始化] 当前目录不是 Git 仓库，开始初始化...
+
+✅ 执行 git init
+✅ 暂存所有文件
+✅ 创建初始提交
+
+提交信息:
+chore(workspace): 初始化 AI 协同工作空间
+
+- 项目类型: {type}
+- 项目名称: {name}
+- 负责人: {owner}
+- 初始化时间: {timestamp}
+
+Co-authored-by: Claude <claude@anthropic.com>
+```
+
+**实现逻辑：**
+
+```bash
+# 检查是否已经是 git 仓库
+if git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "✅ Git 仓库已存在"
+else
+    echo "📦 初始化 Git 仓库..."
+    git init
+    git add .
+    git commit -m "chore(workspace): 初始化 AI 协同工作空间
+
+- 项目类型: ${PROJECT_TYPE}
+- 项目名称: ${PROJECT_NAME}
+- 负责人: ${OWNER}
+- 初始化时间: $(date -Iseconds)
+
+Co-authored-by: Claude <claude@anthropic.com>"
+fi
+```
+
 ### 步骤 6: 生成结构
 
 ```
@@ -323,6 +382,52 @@ Bitable: {app_token}
 ## 可用 Skills
 
 [... product-dev 可用 Skills 列表 ...]
+```
+
+### whiteboard 模板
+
+```markdown
+# {项目名称} - 个人工作空间
+
+> 极简配置，自由记录
+
+## 项目概况
+
+- **项目类型**: whiteboard（白板/笔记）
+- **创建时间**: {timestamp}
+
+## 使用方式
+
+这是一个极简工作空间，你可以：
+
+1. **自由记录** - 在 `docs/` 目录下创建任意文档
+2. **AI 辅助** - 让 AI 帮你整理、总结、扩展内容
+3. **飞书同步** - 可选：同步文档到飞书知识库
+4. **按需升级** - 随时可以切换到完整的项目模板
+
+## 可用 Skills
+
+| Skill | 用途 |
+| --- | --- |
+| doc-workflow | 文档创建（简化版） |
+| feishu-sync | 飞书同步（如已配置） |
+
+## 升级到完整模板
+
+当你需要更规范的流程时，可以升级：
+
+说 "升级到 {type} 模板" 即可。
+```
+
+## whiteboard 类型生成的目录结构
+
+```
+project-root/
+├── CLAUDE.md          # 极简配置
+├── docs/              # 文档目录
+│   └── .gitkeep
+└── templates/
+    └── note.md        # 简单笔记模板
 ```
 
 ## .mcp.json 配置示例

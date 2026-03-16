@@ -1,6 +1,6 @@
 # Claude Code Native AI 协同工作空间
 
-> ⚠️ **版本**: 1.0.2 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
+> ⚠️ **版本**: 1.0.3 | **最新版本**: https://github.com/fstln-dev/fl-workspace/releases
 
 这是一套用于 Claude Code 的工作空间配置，让 AI 成为项目协作的原生运行时。
 
@@ -46,8 +46,9 @@ cp -r .claude-workspace/skills/* .claude/
 - [ ] `.claude-workspace/` 目录已克隆
 - [ ] skills 已复制到 `.claude/` 目录
 - [ ] `.gitignore` 已更新
-- [ ] 用户已选择项目类型（product-dev / implementation / operation / it-infra）
-- [ ] 对应的 SOP Skill 已生效
+- [ ] 用户已选择项目类型（whiteboard / product-dev / implementation / operation / it-infra）
+- [ ] Git 仓库已初始化
+- [ ] 对应的 SOP Skill 已生效（whiteboard 除外）
 
 ## 版本更新
 
@@ -93,6 +94,7 @@ fl-workspace/
 ├── README.md                    # 项目介绍
 ├── LICENSE                      # MIT 许可证
 ├── templates/                   # 项目模版
+│   ├── whiteboard/             # 白板/笔记（极简配置）
 │   ├── product-dev/            # 产品研发项目
 │   ├── implementation/          # 实施交付项目
 │   ├── operation/               # 运营项目
@@ -109,6 +111,7 @@ fl-workspace/
     ├── project-status/          # 项目状态查询
     ├── feishu-connect/          # 飞书连接配置
     ├── feishu-sync/             # 飞书同步
+    ├── git-milestone/           # 里程碑提交
     ├── product-dev-sop/         # 产品研发流程
     ├── implementation-sop/      # 实施交付流程
     ├── operation-sop/           # 运营流程
@@ -225,6 +228,7 @@ fl-workspace/
 | implementation | 实施交付、客户项目 | 需求 → 方案 → 实施 → 验收 → 部署 |
 | operation | 运营活动、持续运营 | 规划 → 执行 → 监控 → 复盘 |
 | it-infra | IT 信息化建设、系统对接 | 需求 → 方案 → 开发 → 测试 → 上线 → 运维 |
+| whiteboard | 个人笔记、快速记录 | 自由记录 → 按需升级 |
 
 选择模板后，对应的 SOP Skill 会自动生效。
 
