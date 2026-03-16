@@ -21,10 +21,8 @@
 ```
 project-root/
 ├── CLAUDE.md          # 本文件
-├── docs/              # 你的文档
-│   └── .gitkeep
-└── templates/
-    └── note.md        # 简单笔记模板
+└── docs/              # 你的文档
+    └── .gitkeep
 ```
 
 ## 可用 Skills

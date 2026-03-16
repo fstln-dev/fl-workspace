@@ -290,28 +290,33 @@ fi
 ✅ 创建 templates/prd.md
 ✅ 创建 templates/tech-design.md
 ✅ 创建 templates/test-plan.md
-✅ 创建 scripts/post-commit (Git Hook)
-
-🔧 配置 Git Hooks...
-✅ 安装 post-commit hook → .git/hooks/post-commit
+✅ 安装 Git Hook → .git/hooks/post-commit
 
 🎉 初始化完成！
 ```
 
 **自动安装 Git Hook：**
 
-初始化时自动执行以下操作：
+初始化时直接将 hook 写入 `.git/hooks/` 目录：
 
 ```bash
-# 如果项目已 git init，自动安装 hook
+# 直接写入 hook 到 .git/hooks/
 if [ -d ".git/hooks" ]; then
-  cp scripts/post-commit .git/hooks/post-commit
+  cat > .git/hooks/post-commit << 'EOF'
+  #!/bin/bash
+  # 检测已批准的文档，提示同步
+  git diff --name-only HEAD~1 HEAD | grep '\.md$' | while read file; do
+    if grep -q 'status: approved' "$file" 2>/dev/null; then
+      echo "📄 $file 已批准，可同步到飞书"
+    fi
+  done
+  EOF
   chmod +x .git/hooks/post-commit
   echo "✅ Git post-commit hook 已安装"
 fi
 ```
 
-如果项目尚未初始化 git，hook 脚本会保存在 `scripts/post-commit`，用户可以在后续 `git init` 后手动安装。
+**注意**：Hook 直接安装到 `.git/hooks/` 目录，不会在项目根目录创建额外文件。
 
 ## 功能对比
 
@@ -424,10 +429,8 @@ Bitable: {app_token}
 ```
 project-root/
 ├── CLAUDE.md          # 极简配置
-├── docs/              # 文档目录
-│   └── .gitkeep
-└── templates/
-    └── note.md        # 简单笔记模板
+└── docs/              # 文档目录
+    └── .gitkeep
 ```
 
 ## .mcp.json 配置示例
